@@ -55,5 +55,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ... Rest of your code ...
+    let currentVideoIndex = 0; // Track the current video index
+
+    // Add a click event listener to the videoPlayerContainer
+    videoPlayerContainer.addEventListener('click', function () {
+        // Increment the current video index to switch to the next video
+        currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
+
+        // Call the playVideoByIndex function to switch to the next video
+        playVideoByIndex(currentVideoIndex);
+    });
 });

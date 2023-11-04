@@ -1,17 +1,3 @@
-const preloadWorker = new Worker('preloadWorker.js'); // Create a new Web Worker for preloading tasks
-
-// Define the videoArray outside the DOMContentLoaded event
-const videoArray = [
-    'SW1.mp4',
-    'SW2.mp4',
-    'SW3.mp4',
-    'SW4.mp4',
-    'SW5.mp4',
-    'SW6.mp4',
-    // Add more video filenames as needed
-];
-
-// The rest of your code within the DOMContentLoaded event
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const videoElement = document.createElement('video');
@@ -36,11 +22,34 @@ document.addEventListener('DOMContentLoaded', function () {
     const timerInterval = 100; // 100 ms
     let audioStarted = false;
 
-    let preloadedVideoIndex = 1; // Start with the second video
+    // Define the videoArray with the video paths
+    const videoArray = [
+        'wwwroot/videos/SW1.mp4',
+        'wwwroot/videos/SW2.mp4',
+        'wwwroot/videos/SW3.mp4',
+        'wwwroot/videos/SW4.mp4',
+        'wwwroot/videos/SW5.mp4',
+        'wwwroot/videos/SW6.mp4',
+        // Add more video filenames as needed
+    ];
+
+    // Preload videos using PreloadJS
+    const preload = new createjs.LoadQueue();
+
+    // Define the video paths for preloading
+    const videoPaths = videoArray.map(path => ({ src: path, type: createjs.Types.VIDEO }));
+
+    preload.loadManifest(videoPaths);
+
+    preload.on('fileload', function (event) {
+        // Handle preloaded video element
+        const preloadedVideo = event.result;
+        // You can use the preloadedVideo element in your application as needed
+    });
 
     function playVideoByIndex(index) {
         videoElement.pause();
-        videoElement.src = 'wwwroot/videos/' + videoArray[index];
+        videoElement.src = videoArray[index];
         videoElement.currentTime = audioPlayer.currentTime;
 
         videoElement.addEventListener('timeupdate', () => {
@@ -67,14 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Message event handler for the preloadWorker
-    preloadWorker.onmessage = (event) => {
-        // Handle the preloaded video element
-        const preloadedVideoElement = event.data;
-
-        // You can use this preloadedVideoElement in your application as needed
-    };
-
     document.addEventListener('click', () => {
         if (!audioStarted) {
             startAudio();
@@ -83,8 +84,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const nextIndex = (currentVideoIndex + 1) % videoArray.length;
         playVideoByIndex(nextIndex);
-
-        // Notify the preloadWorker to preload the next video
-        preloadWorker.postMessage(videoArray[nextIndex]);
     });
 });

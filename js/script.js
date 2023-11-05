@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
-    let videoElement; // Declare videoElement variable
+    const audioPlayer = document.createElement('audio');
+    audioPlayer.src = 'wwwroot/assets/Song.m4a'; // Update this to the relative path of your audio file
+    audioPlayer.preload = 'auto';
+    audioPlayer.load();
+    document.body.appendChild(audioPlayer);
 
-    // Create an array to store preloaded video elements
-    const preloadedVideos = [];
+    let currentVideoIndex = 0;
+    let preloadedVideoIndex = 1;
+    let isPlaying = false;
 
-    // Define the videoArray with the video paths
     const videoArray = [
         'wwwroot/videos/SW1.mp4',
         'wwwroot/videos/SW2.mp4',
@@ -16,53 +20,67 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add more video filenames as needed
     ];
 
-    // Preload all videos in advance
-    videoArray.forEach(videoPath => {
-        const video = document.createElement('video');
-        video.src = videoPath;
-        video.preload = 'auto';
-        video.setAttribute('playsinline', ''); // Add playsinline attribute for mobile devices
-        preloadedVideos.push(video);
+    let videoElement = document.createElement('video');
+    videoElement.id = 'videoPlayer';
+    videoElement.controls = true;
+    videoElement.setAttribute('playsinline', '');
+    videoElement.preload = 'auto';
+    videoElement.muted = true; // Mute the video initially
+
+    videoElement.addEventListener('timeupdate', () => {
+        if (!audioPlayer.paused && !isPlaying) {
+            videoElement.muted = false; // Unmute when audio is playing
+            isPlaying = true;
+        }
     });
 
-    // Create an audio element for the background audio
-    const backgroundAudio = document.createElement('audio');
-    backgroundAudio.src = 'wwwroot/assets/Song.m4a'; // Update this to the relative path of your audio file
-    backgroundAudio.preload = 'auto';
-    backgroundAudio.loop = true; // Set the loop attribute to true for continuous playback
-    backgroundAudio.load();
-    document.body.appendChild(backgroundAudio);
+    videoPlayerContainer.appendChild(videoElement);
 
-    // Function to play video by index
     function playVideoByIndex(index) {
-        // Pause the current video
-        if (videoElement) {
-            videoElement.pause();
-            videoPlayerContainer.removeChild(videoElement);
-        }
+        videoElement.pause();
+        videoElement.src = videoArray[index];
+        videoElement.currentTime = audioPlayer.currentTime;
 
-        // Use the preloaded video element for the new video
-        const newVideoElement = preloadedVideos[index];
-        videoPlayerContainer.appendChild(newVideoElement);
+        videoElement.addEventListener('ended', () => {
+            videoElement.currentTime = 0;
+            videoElement.play();
+        });
 
-        // Update the reference to the current video element
-        videoElement = newVideoElement;
+        currentVideoIndex = index;
+    }
 
-        // Start playback
-        videoElement.currentTime = backgroundAudio.currentTime;
-        videoElement.play().catch(error => {
-            console.error('Video playback error:', error.message);
+    function startAudio() {
+        audioPlayer.load();
+        audioPlayer.play().catch(error => {
+            console.error('Audio playback error:', error.message);
         });
     }
 
-    let currentVideoIndex = 0; // Track the current video index
+    preloadNextVideo();
 
-    // Add a click event listener to the videoPlayerContainer
-    videoPlayerContainer.addEventListener('click', function () {
-        // Increment the current video index to switch to the next video
-        currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
+    document.addEventListener('click', () => {
+        if (!audioPlayer.paused) {
+            if (!isPlaying) {
+                startAudio();
+            }
 
-        // Call the playVideoByIndex function to switch to the next video
-        playVideoByIndex(currentVideoIndex);
+            const nextIndex = (currentVideoIndex + 1) % videoArray.length;
+            playVideoByIndex(nextIndex);
+
+            preloadNextVideo();
+        }
     });
+
+    function preloadNextVideo() {
+        if (preloadedVideoIndex < videoArray.length) {
+            const preloadVideo = document.createElement('video');
+            preloadVideo.src = videoArray[preloadedVideoIndex];
+            preloadVideo.preload = 'auto';
+            preloadVideo.muted = true;
+            preloadVideo.onloadeddata = () => {
+                preloadedVideoIndex++;
+                preloadNextVideo();
+            };
+        }
+    }
 });

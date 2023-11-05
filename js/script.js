@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
     backgroundAudio.load();
     document.body.appendChild(backgroundAudio);
 
+    // Store the audio position
+    let audioPosition = 0;
+
     // Function to play video by index
     function playVideoByIndex(index) {
         // Pause the current video
@@ -45,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function () {
         videoPlayerContainer.innerHTML = '';
         videoPlayerContainer.appendChild(newVideoElement);
 
-        // Set the audio time to match the video time
-        backgroundAudio.currentTime = newVideoElement.currentTime;
+        // Set the audio time to match the stored position
+        backgroundAudio.currentTime = audioPosition;
 
         // Update the reference to the current video element
         videoElement = newVideoElement;
@@ -65,6 +68,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', () => {
         // Calculate the next index, wrapping around to the beginning if needed
         const nextIndex = (currentVideoIndex + 1) % videoArray.length;
+
+        // Store the audio position before switching videos
+        audioPosition = backgroundAudio.currentTime;
 
         // Play the next video
         playVideoByIndex(nextIndex);

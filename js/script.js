@@ -58,11 +58,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let audioPlaying = false;
 
     document.addEventListener('click', () => {
-    // Calculate the next index, wrapping around to the beginning if needed
-    currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
-
-    // Play the next video
-    playVideoByIndex(currentVideoIndex);
+        if (!audioPlaying) {
+            backgroundAudio.play().catch(error => {
+                console.error('Audio playback error:', error.message);
+            });
+            audioPlaying = true;
         }
 
         // Start with the first video in the array and synchronize its time with audio

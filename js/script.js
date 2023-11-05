@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
         videoPlayerContainer.innerHTML = '';
         videoPlayerContainer.appendChild(newVideoElement);
 
+        // Set the audio time to match the video time
+        backgroundAudio.currentTime = newVideoElement.currentTime;
+
         // Update the reference to the current video element
         videoElement = newVideoElement;
 
@@ -65,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Play the next video
         playVideoByIndex(nextIndex);
-        backgroundAudio.currentTime = videoElement.currentTime;
+
+        // Play the audio track
         backgroundAudio.play().catch(error => {
             console.error('Audio playback error:', error.message);
         });

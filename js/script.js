@@ -1,13 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
-    let videoElement; // Declare videoElement variable
+    let currentVideo; // Declare currentVideo variable
     let currentVideoIndex = 0; // Keep track of the current video index
+    let videoArray = []; // Define the videoArray with the video elements
 
-    // Create an array to store preloaded video elements
-    const preloadedVideos = [];
-
-    // Define the videoArray with the video paths
-    const videoArray = [
+    // Create video elements for the videoArray
+    const videoPaths = [
         'wwwroot/videos/SW1.mp4',
         'wwwroot/videos/SW2.mp4',
         'wwwroot/videos/SW3.mp4',
@@ -17,46 +15,40 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add more video filenames as needed
     ];
 
-    // Preload all videos in advance
-    videoArray.forEach(videoPath => {
+    // Preload all videos in advance and add playsinline attribute
+    videoPaths.forEach(videoPath => {
         const video = document.createElement('video');
         video.src = videoPath;
         video.preload = 'auto';
-        video.setAttribute('playsinline', ''); // Add playsinline attribute for mobile devices
-        preloadedVideos.push(video);
+        video.setAttribute('playsinline', 'playsinline');
+        videoArray.push(video);
     });
 
     // Create an audio element for the background audio
     const backgroundAudio = document.createElement('audio');
     backgroundAudio.src = 'wwwroot/assets/Song.m4a'; // Update this to the relative path of your audio file
     backgroundAudio.preload = 'auto';
-    backgroundAudio.load();
-    document.body.appendChild(backgroundAudio);
-
-    // Store the audio position
-    let audioPosition = 0;
+    backgroundAudio.loop = true; // Set the loop attribute to true for continuous playback
 
     // Function to play video by index
-    function playVideoByIndex(index) {
-        // Pause the current video
-        if (videoElement) {
-            videoElement.pause();
+    function playVideoByIndex(index, time = 0) {
+        const newVideo = videoArray[index];
+
+        if (currentVideo) {
+            // Pause the current video
+            currentVideo.pause();
+            videoPlayerContainer.removeChild(currentVideo);
         }
 
         // Use the preloaded video element for the new video
-        const newVideoElement = preloadedVideos[index];
-        videoPlayerContainer.innerHTML = '';
-        videoPlayerContainer.appendChild(newVideoElement);
-
-        // Set the audio time to match the stored position
-        backgroundAudio.currentTime = audioPosition;
+        videoPlayerContainer.appendChild(newVideo);
+        newVideo.currentTime = time;
 
         // Update the reference to the current video element
-        videoElement = newVideoElement;
+        currentVideo = newVideo;
 
         // Start playback
-        videoElement.currentTime = 0;
-        videoElement.play().catch(error => {
+        currentVideo.play().catch(error => {
             console.error('Video playback error:', error.message);
         });
 
@@ -64,23 +56,18 @@ document.addEventListener('DOMContentLoaded', function () {
         currentVideoIndex = index;
     }
 
-    // Add a click event listener to transition to the next video on user interaction
+    // Add a click event listener to play audio and video on user interaction
+    let audioPlaying = false;
+
     document.addEventListener('click', () => {
-        // Calculate the next index, wrapping around to the beginning if needed
-        const nextIndex = (currentVideoIndex + 1) % videoArray.length;
+        if (!audioPlaying) {
+            backgroundAudio.play().catch(error => {
+                console.error('Audio playback error:', error.message);
+            });
+            audioPlaying = true;
+        }
 
-        // Store the audio position before switching videos
-        audioPosition = backgroundAudio.currentTime;
-
-        // Play the next video
-        playVideoByIndex(nextIndex);
-
-        // Play the audio track
-        backgroundAudio.play().catch(error => {
-            console.error('Audio playback error:', error.message);
-        });
+        // Start with the first video in the array and synchronize its time with audio
+        playVideoByIndex(0, backgroundAudio.currentTime);
     });
-
-    // Start with the first video in the array
-    playVideoByIndex(0);
 });

@@ -2,10 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     let currentVideo; // Declare currentVideo variable
     let currentVideoIndex = 0; // Keep track of the current video index
-    let videoArray = []; // Define the videoArray with the video elements
 
-    // Create video elements for the videoArray
-    const videoPaths = [
+    // Create an array to store preloaded video elements
+    const preloadedVideos = [];
+
+    // Define the videoArray with the video paths
+    const videoArray = [
         'wwwroot/videos/SW1.mp4',
         'wwwroot/videos/SW2.mp4',
         'wwwroot/videos/SW3.mp4',
@@ -15,13 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add more video filenames as needed
     ];
 
-    // Preload all videos in advance and add playsinline attribute
-    videoPaths.forEach(videoPath => {
+    // Preload all videos in advance
+    videoArray.forEach(videoPath => {
         const video = document.createElement('video');
         video.src = videoPath;
         video.preload = 'auto';
-        video.setAttribute('playsinline', 'playsinline');
-        videoArray.push(video);
+        video.setAttribute('playsinline', ''); // Add playsinline attribute for mobile devices
+        preloadedVideos.push(video);
     });
 
     // Create an audio element for the background audio
@@ -29,30 +31,26 @@ document.addEventListener('DOMContentLoaded', function () {
     backgroundAudio.src = 'wwwroot/assets/Song.m4a'; // Update this to the relative path of your audio file
     backgroundAudio.preload = 'auto';
     backgroundAudio.loop = true; // Set the loop attribute to true for continuous playback
+    backgroundAudio.load();
+    document.body.appendChild(backgroundAudio);
 
     // Function to play video by index
-    function playVideoByIndex(index, time = 0) {
-        const newVideo = videoArray[index];
-
+    function playVideoByIndex(index) {
         if (currentVideo) {
-            // Pause the current video
             currentVideo.pause();
             videoPlayerContainer.removeChild(currentVideo);
         }
 
-        // Use the preloaded video element for the new video
+        const newVideo = preloadedVideos[index];
         videoPlayerContainer.appendChild(newVideo);
-        newVideo.currentTime = time;
 
-        // Update the reference to the current video element
+        newVideo.currentTime = currentVideo ? currentVideo.currentTime : 0; // Sync video time
+
         currentVideo = newVideo;
-
-        // Start playback
         currentVideo.play().catch(error => {
             console.error('Video playback error:', error.message);
         });
 
-        // Update the current video index
         currentVideoIndex = index;
     }
 
@@ -68,6 +66,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Start with the first video in the array and synchronize its time with audio
-        playVideoByIndex(0, backgroundAudio.currentTime);
+        playVideoByIndex(0);
     });
 });

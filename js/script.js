@@ -54,18 +54,25 @@ document.addEventListener('DOMContentLoaded', function () {
         currentVideoIndex = index;
     }
 
-    // Add a click event listener to play audio and video on user interaction
+    // Add a click event listener to play audio and switch to the next video on user interaction
     let audioPlaying = false;
 
     document.addEventListener('click', () => {
         if (!audioPlaying) {
+            // Play the background audio on the first click
             backgroundAudio.play().catch(error => {
                 console.error('Audio playback error:', error.message);
             });
             audioPlaying = true;
-        }
+        } else {
+            // Calculate the next index, wrapping around to the beginning if needed
+            currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
 
-        // Start with the first video in the array and synchronize its time with audio
-        playVideoByIndex(0);
+            // Play the next video
+            playVideoByIndex(currentVideoIndex);
+        }
     });
+
+    // Start with the first video in the array and synchronize its time with audio
+    playVideoByIndex(0);
 });

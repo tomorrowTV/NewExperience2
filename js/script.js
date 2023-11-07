@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Create an audio element for the background audio
     const backgroundAudio = document.createElement('audio');
-    backgroundAudio.src = 'wwwroot/assets/Song.m4a'; // Update this to the relative path of your audio file
+    backgroundAudio.src = 'wwwroot/assets/Song.mp3'; // Update this to the relative path of your audio file
     backgroundAudio.preload = 'auto';
     backgroundAudio.loop = true; // Set the loop attribute to true for continuous playback
     backgroundAudio.load();

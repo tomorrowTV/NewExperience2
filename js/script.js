@@ -26,13 +26,20 @@ document.addEventListener('DOMContentLoaded', function () {
         preloadedVideos.push(video);
     });
 
-    // Create an audio element for the background audio
-    const backgroundAudio = document.createElement('audio');
-    backgroundAudio.src = 'wwwroot/assets/Song.m4a'; // Update this to the relative path of your audio file
-    backgroundAudio.preload = 'auto';
-    backgroundAudio.loop = true; // Set the loop attribute to true for continuous playback
-    backgroundAudio.load();
-    document.body.appendChild(backgroundAudio);
+    // Create an audio context and audio buffer source
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioSource = audioContext.createBufferSource();
+
+    // Load the audio file using fetch
+    fetch('wwwroot/assets/Song.m4a')
+        .then(response => response.arrayBuffer())
+        .then(data => audioContext.decodeAudioData(data))
+        .then(decodedData => {
+            audioSource.buffer = decodedData;
+            audioSource.loop = true; // Set the loop attribute to true for continuous playback
+            audioSource.connect(audioContext.destination);
+        })
+        .catch(error => console.error('Audio loading error:', error.message));
 
     let audioPlaying = false;
 
@@ -52,11 +59,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (audioPlaying) {
             // Start playback of the background audio on the second click
-            backgroundAudio.play().catch(error => {
-                console.error('Audio playback error:', error.message);
-            });
+            audioSource.start();
         } else {
             audioPlaying = true;
+            audioSource.start();
         }
 
         currentVideo.play().catch(error => {

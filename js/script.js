@@ -54,25 +54,29 @@ document.addEventListener('DOMContentLoaded', function () {
         currentVideoIndex = index;
     }
 
-    // Add a click event listener to play audio and switch to the next video on user interaction
-    let audioPlaying = false;
+    let landingClick = true; // Track the landing click
 
+    // Add a click event listener to handle landing and video switching
     document.addEventListener('click', () => {
-        if (!audioPlaying) {
-            // Play the background audio on the first click
-            backgroundAudio.play().catch(error => {
-                console.error('Audio playback error:', error.message);
-            });
-            audioPlaying = true;
+        if (landingClick) {
+            // Handle the landing process for the first click
+            // You can add your landing logic here
+            landingClick = false;
         } else {
             // Calculate the next index, wrapping around to the beginning if needed
             currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
 
             // Play the next video
             playVideoByIndex(currentVideoIndex);
+
+            if (!backgroundAudio.paused) {
+                // If audio is playing, pause and play to sync with the new video
+                backgroundAudio.pause();
+                backgroundAudio.play();
+            }
         }
     });
 
-    // Start with the first video in the array and synchronize its time with audio
+    // Start with the first video in the array
     playVideoByIndex(0);
 });

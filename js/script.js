@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
     backgroundAudio.load();
     document.body.appendChild(backgroundAudio);
 
+    let audioPlaying = false;
+
     // Function to play video by index
     function playVideoByIndex(index) {
         if (currentVideo) {
@@ -47,6 +49,16 @@ document.addEventListener('DOMContentLoaded', function () {
         newVideo.currentTime = currentVideo ? currentVideo.currentTime : 0; // Sync video time
 
         currentVideo = newVideo;
+
+        if (audioPlaying) {
+            // Start playback of the background audio on the second click
+            backgroundAudio.play().catch(error => {
+                console.error('Audio playback error:', error.message);
+            });
+        } else {
+            audioPlaying = true;
+        }
+
         currentVideo.play().catch(error => {
             console.error('Video playback error:', error.message);
         });
@@ -54,29 +66,15 @@ document.addEventListener('DOMContentLoaded', function () {
         currentVideoIndex = index;
     }
 
-    let landingClick = true; // Track the landing click
-
-    // Add a click event listener to handle landing and video switching
+    // Add a click event listener to switch to the next video on user interaction
     document.addEventListener('click', () => {
-        if (landingClick) {
-            // Handle the landing process for the first click
-            // You can add your landing logic here
-            landingClick = false;
-        } else {
-            // Calculate the next index, wrapping around to the beginning if needed
-            currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
+        // Calculate the next index, wrapping around to the beginning if needed
+        currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
 
-            // Play the next video
-            playVideoByIndex(currentVideoIndex);
-
-            if (!backgroundAudio.paused) {
-                // If audio is playing, pause and play to sync with the new video
-                backgroundAudio.pause();
-                backgroundAudio.play();
-            }
-        }
+        // Play the next video
+        playVideoByIndex(currentVideoIndex);
     });
 
-    // Start with the first video in the array
+    // Start with the first video in the array and synchronize its time with audio
     playVideoByIndex(0);
 });

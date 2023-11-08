@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentVideo; // Declare currentVideo variable
     let currentVideoIndex = 0; // Keep track of the current video index
     let backgroundAudio; // Declare backgroundAudio variable for Howler.js
-    let preloading = false; // Flag to track whether preloading is in progress
+    let clicks = 0;
 
     // Create an array to store preloaded video elements
     const preloadedVideos = [];
@@ -19,6 +19,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add more video filenames as needed
     ];
 
+    // Preload all videos in advance
+    videoArray.forEach(videoPath => {
+        const video = document.createElement('video');
+        video.src = videoPath;
+        video.preload = 'auto';
+        video.setAttribute('playsinline', ''); // Add playsinline attribute for mobile devices
+        preloadedVideos.push(video);
+    });
+
     // Function to play video by index
     function playVideoByIndex(index) {
         if (currentVideo) {
@@ -32,29 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
         newVideo.currentTime = currentVideo ? currentVideo.currentTime : 0; // Sync video time
 
         currentVideo = newVideo;
-        currentVideo.play().catch(error => {
-            console.error('Video playback error:', error.message);
-        });
 
-        currentVideoIndex = index;
-    }
-
-    // Add a click event listener
-    document.addEventListener('click', () => {
-        if (!preloading) {
-            // Preload all videos and start background audio preloading
-            preloading = true;
-
-            // Preload all videos
-            videoArray.forEach(videoPath => {
-                const video = document.createElement('video');
-                video.src = videoPath;
-                video.preload = 'auto';
-                video.setAttribute('playsinline', ''); // Add playsinline attribute for mobile devices
-                preloadedVideos.push(video);
-            });
-
-            // Start background audio preloading using Howler.js
+        if (clicks === 1) {
+            // Start playback of the background audio on the second click
             if (!backgroundAudio) {
                 backgroundAudio = new Howl({
                     src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
@@ -62,13 +51,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     html5: true, // Use HTML5 audio
                 });
             }
-        } else {
-            // Play the next video
-            currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
-            playVideoByIndex(currentVideoIndex);
-
-            // Play the background audio
             backgroundAudio.play();
         }
+
+        currentVideo.play().catch(error => {
+            console.error('Video playback error:', error.message);
+        });
+
+        currentVideoIndex = index;
+    }
+
+    // Add a click event listener to switch to the next video on user interaction
+    document.addEventListener('click', () => {
+        // Calculate the next index, wrapping around to the beginning if needed
+        currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
+
+        // Play the next video
+        playVideoByIndex(currentVideoIndex);
+
+        clicks++;
     });
+
+    // Start with the first video in the array
+    playVideoByIndex(0);
 });

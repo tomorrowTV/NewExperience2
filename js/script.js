@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentVideo; // Declare currentVideo variable
     let currentVideoIndex = 0; // Keep track of the current video index
     let backgroundAudio; // Declare backgroundAudio variable for Howler.js
-    let clicks = 0;
+    let firstClick = true; // Track the first click
 
     // Create an array to store preloaded video elements
     const preloadedVideos = [];
@@ -41,19 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
         newVideo.currentTime = currentVideo ? currentVideo.currentTime : 0; // Sync video time
 
         currentVideo = newVideo;
-
-        if (clicks === 1) {
-            // Start playback of the background audio on the second click
-            if (!backgroundAudio) {
-                backgroundAudio = new Howl({
-                    src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
-                    loop: true, // Set the loop attribute to true for continuous playback
-                    html5: true, // Use HTML5 audio
-                });
-            }
-            backgroundAudio.play();
-        }
-
         currentVideo.play().catch(error => {
             console.error('Video playback error:', error.message);
         });
@@ -61,15 +48,24 @@ document.addEventListener('DOMContentLoaded', function () {
         currentVideoIndex = index;
     }
 
-    // Add a click event listener to switch to the next video on user interaction
+    // Add a click event listener to load and play audio and video on user interaction
     document.addEventListener('click', () => {
-        // Calculate the next index, wrapping around to the beginning if needed
-        currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
+        if (firstClick) {
+            // On the first click, preload the audio and video
+            if (!backgroundAudio) {
+                backgroundAudio = new Howl({
+                    src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
+                    loop: true, // Set the loop attribute to true for continuous playback
+                    html5: true, // Use HTML5 audio
+                });
+            }
 
-        // Play the next video
-        playVideoByIndex(currentVideoIndex);
-
-        clicks++;
+            firstClick = false; // Mark the first click as processed
+        } else {
+            // On the second click and subsequent clicks, start playing the background audio and the video
+            backgroundAudio.play();
+            playVideoByIndex(currentVideoIndex);
+        }
     });
 
     // Start with the first video in the array

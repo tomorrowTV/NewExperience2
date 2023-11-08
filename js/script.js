@@ -27,9 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
         preloadedVideos.push(video);
     });
 
-    // Define a variable to keep track of the audio load state
-    let audioLoaded = false;
-
     // Function to play video by index
     function playVideoByIndex(index) {
         if (currentVideo) {
@@ -48,19 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         currentVideoIndex = index;
-
-        if (!audioLoaded) {
-            // Load the background audio using Howler.js
-            backgroundAudio = new Howl({
-                src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
-                loop: true, // Set the loop attribute to true for continuous playback
-                html5: true, // Use HTML5 audio
-                onload: function () {
-                    audioLoaded = true;
-                    backgroundAudio.play();
-                },
-            });
-        }
     }
 
     // Add a click event listener to switch to the next video on user interaction
@@ -70,6 +54,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Play the next video
         playVideoByIndex(currentVideoIndex);
+
+        // Load and play the background audio using Howler.js only once
+        if (!backgroundAudio) {
+            backgroundAudio = new Howl({
+                src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
+                loop: false, // Play the audio once, not in a loop
+                html5: true, // Use HTML5 audio
+            });
+            backgroundAudio.play();
+        }
     });
 
     // Start with the first video in the array

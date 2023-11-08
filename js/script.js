@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
         preloadedVideos.push(video);
     });
 
+    let audioPlaying = false;
+
     // Function to play video by index
     function playVideoByIndex(index) {
         if (currentVideo) {
@@ -40,38 +42,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         currentVideo = newVideo;
 
-        // Ensure that the audio track plays on mobile browsers
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            // On mobile, start audio and video together on the first click
-            if (index === 0) {
-                newVideo.play().catch(error => {
-                    console.error('Video playback error:', error.message);
-                });
-                const backgroundAudio = new Audio('wwwroot/assets/Song.m4a');
-                backgroundAudio.preload = 'auto';
-                backgroundAudio.loop = true;
-                backgroundAudio.play().catch(error => {
-                    console.error('Audio playback error:', error.message);
-                });
-            }
+        if (audioPlaying) {
+            // Start playback of the background audio on the second click
+            backgroundAudio.play();
         } else {
-            // On desktop, preload audio and video on the first click
-            if (index === 0) {
-                const backgroundAudio = new Audio('wwwroot/assets/Song.m4a');
-                backgroundAudio.preload = 'auto';
-                backgroundAudio.loop = true;
-            }
-
-            // On desktop, start audio and video together on the second click
-            if (index === 1) {
-                newVideo.play().catch(error => {
-                    console.error('Video playback error:', error.message);
-                });
-                backgroundAudio.play().catch(error => {
-                    console.error('Audio playback error:', error.message);
-                });
-            }
+            audioPlaying = true;
         }
+
+        currentVideo.play().catch(error => {
+            console.error('Video playback error:', error.message);
+        });
 
         currentVideoIndex = index;
     }
@@ -84,6 +64,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Play the next video
         playVideoByIndex(currentVideoIndex);
     });
+
+    // Create an audio element for the background audio using Howler.js
+    const backgroundAudio = new Howl({
+        src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
+        loop: true, // Set the loop attribute to true for continuous playback
+    });
+    backgroundAudio.load();
 
     // Start with the first video in the array
     playVideoByIndex(0);

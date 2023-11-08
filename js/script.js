@@ -42,10 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         currentVideo = newVideo;
 
-        if (audioPlaying) {
-            // Start playback of the background audio on the second click
+        if (!audioPlaying) {
+            // Create an audio element for the background audio using Howler.js
+            const backgroundAudio = new Howl({
+                src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
+                loop: true, // Set the loop attribute to true for continuous playback
+            });
+            backgroundAudio.load();
             backgroundAudio.play();
-        } else {
             audioPlaying = true;
         }
 
@@ -64,13 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Play the next video
         playVideoByIndex(currentVideoIndex);
     });
-
-    // Create an audio element for the background audio using Howler.js
-    const backgroundAudio = new Howl({
-        src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
-        loop: true, // Set the loop attribute to true for continuous playback
-    });
-    backgroundAudio.load();
 
     // Start with the first video in the array
     playVideoByIndex(0);

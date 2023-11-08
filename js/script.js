@@ -26,12 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
         preloadedVideos.push(video);
     });
 
-    // Create an audio element for the background audio
-    const backgroundAudio = new Audio('wwwroot/assets/Song.m4a'); // Update this to the relative path of your audio file
-
-    // Flag to track if both video and audio are preloaded
-    let preloaded = false;
-
     // Function to play video by index
     function playVideoByIndex(index) {
         if (currentVideo) {
@@ -46,18 +40,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
         currentVideo = newVideo;
 
-        if (preloaded) {
-            // Start playback of the background audio
-            backgroundAudio.play().catch(error => {
-                console.error('Audio playback error:', error.message);
-            });
+        // Ensure that the audio track plays on mobile browsers
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            // On mobile, start audio and video together on the first click
+            if (index === 0) {
+                newVideo.play().catch(error => {
+                    console.error('Video playback error:', error.message);
+                });
+                const backgroundAudio = new Audio('wwwroot/assets/Song.m4a');
+                backgroundAudio.preload = 'auto';
+                backgroundAudio.loop = true;
+                backgroundAudio.play().catch(error => {
+                    console.error('Audio playback error:', error.message);
+                });
+            }
         } else {
-            preloaded = true;
-        }
+            // On desktop, preload audio and video on the first click
+            if (index === 0) {
+                const backgroundAudio = new Audio('wwwroot/assets/Song.m4a');
+                backgroundAudio.preload = 'auto';
+                backgroundAudio.loop = true;
+            }
 
-        currentVideo.play().catch(error => {
-            console.error('Video playback error:', error.message);
-        });
+            // On desktop, start audio and video together on the second click
+            if (index === 1) {
+                newVideo.play().catch(error => {
+                    console.error('Video playback error:', error.message);
+                });
+                backgroundAudio.play().catch(error => {
+                    console.error('Audio playback error:', error.message);
+                });
+            }
+        }
 
         currentVideoIndex = index;
     }

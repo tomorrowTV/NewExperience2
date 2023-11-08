@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     let currentVideo; // Declare currentVideo variable
     let currentVideoIndex = 0; // Keep track of the current video index
-    let backgroundAudio; // Declare backgroundAudio variable for Howler.js
-    let firstClick = true; // Track the first click
 
     // Create an array to store preloaded video elements
     const preloadedVideos = [];
@@ -28,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function () {
         preloadedVideos.push(video);
     });
 
+    // Create an audio element for the background audio
+    const backgroundAudio = new Audio('wwwroot/assets/Song.m4a'); // Update this to the relative path of your audio file
+
+    // Flag to track if both video and audio are preloaded
+    let preloaded = false;
+
     // Function to play video by index
     function playVideoByIndex(index) {
         if (currentVideo) {
@@ -41,6 +45,16 @@ document.addEventListener('DOMContentLoaded', function () {
         newVideo.currentTime = currentVideo ? currentVideo.currentTime : 0; // Sync video time
 
         currentVideo = newVideo;
+
+        if (preloaded) {
+            // Start playback of the background audio
+            backgroundAudio.play().catch(error => {
+                console.error('Audio playback error:', error.message);
+            });
+        } else {
+            preloaded = true;
+        }
+
         currentVideo.play().catch(error => {
             console.error('Video playback error:', error.message);
         });
@@ -48,24 +62,13 @@ document.addEventListener('DOMContentLoaded', function () {
         currentVideoIndex = index;
     }
 
-    // Add a click event listener to load and play audio and video on user interaction
+    // Add a click event listener to switch to the next video on user interaction
     document.addEventListener('click', () => {
-        if (firstClick) {
-            // On the first click, preload the audio and video
-            if (!backgroundAudio) {
-                backgroundAudio = new Howl({
-                    src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
-                    loop: true, // Set the loop attribute to true for continuous playback
-                    html5: true, // Use HTML5 audio
-                });
-            }
+        // Calculate the next index, wrapping around to the beginning if needed
+        currentVideoIndex = (currentVideoIndex + 1) % videoArray.length;
 
-            firstClick = false; // Mark the first click as processed
-        } else {
-            // On the second click and subsequent clicks, start playing the background audio and the video
-            backgroundAudio.play();
-            playVideoByIndex(currentVideoIndex);
-        }
+        // Play the next video
+        playVideoByIndex(currentVideoIndex);
     });
 
     // Start with the first video in the array

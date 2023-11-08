@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!backgroundAudio) {
             backgroundAudio = new Howl({
                 src: ['wwwroot/assets/Song.m4a'], // Update this to the relative path of your audio file
-                loop: false, // Play the audio once, not in a loop
+                loop: true, // Play the audio once, not in a loop
                 html5: true, // Use HTML5 audio
             });
             backgroundAudio.play();

@@ -12,9 +12,10 @@
 <body>
     <canvas id="gameCanvas"></canvas>
 
-    <div id="loadingBarContainer">
+    <!-- Updated loading screen container -->
+    <div id="loadingScreen">
         <div id="loadingText">Loading...</div>
-        <img id="loadingBar" src="wwwroot/assets/CowboyHead.gif" alt="Loading Bar">
+        <img id="loadingGif" src="wwwroot/assets/CowboyHead.gif" alt="Loading GIF">
     </div>
 
     <div id="videoPlayerContainer"></div>
@@ -35,7 +36,7 @@
 
         // Define assets to preload
         const assetsToLoad = [
-            { id: "loadingBar", src: "wwwroot/assets/CowboyHead.gif" },
+            { id: "loadingGif", src: "wwwroot/assets/CowboyHead.gif" },
             { id: "audio1", src: "wwwroot/assets/Song.m4a" },
             { id: "video1", src: "wwwroot/videos/SW1.mp4" },
             { id: "video2", src: "wwwroot/videos/SW2.mp4" },
@@ -52,6 +53,9 @@
         createjs.MD2Laser.preload.on("complete", function () {
             // Your game code that relies on preloaded assets
             // This can be in your existing script.js file
+
+            // Hide the loading screen
+            document.getElementById("loadingScreen").style.display = "none";
 
             // Change loading text to "Click" when the game starts
             document.getElementById("loadingText").textContent = "Click";

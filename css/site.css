@@ -55,7 +55,7 @@ html {
     /* Positioning options */
     position: absolute; /* Use 'relative' or 'absolute' based on your layout */
     top: 20px; /* Adjust the distance from the top */
-    left: 50%; /* Move it to the center horizontally */
+    left: 20%; /* Move it to the center horizontally */
     transform: translateX(-50%); /* Center it horizontally using transform */
     
     /* Uncomment the following line to center it vertically */

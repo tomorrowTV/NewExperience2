@@ -92,5 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Change loading text to "Click" when the game starts
         loadingText.textContent = 'Click';
+
+        console.log('Game started, loading text changed to "Click"');
     }
 });

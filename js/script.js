@@ -1,17 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
-    const loadingScreen = document.getElementById('loadingBarContainer');
-    const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
+    const loadingText = document.getElementById('loadingText');
 
     let currentVideoIndex = 0;
     let audioPlaying = false;
     let audioStartTime = 0;
+    let loadingMusicInstance;
+
     const preloadedVideos = [];
 
     // Define assets to preload
     const assetsToLoad = [
-        'wwwroot/assets/LoadingMusic.m4a',
+        { id: "loadingMusic", src: "wwwroot/assets/LoadingMusic.m4a" },
         'wwwroot/assets/CowboyHead.gif',
         'wwwroot/assets/Song.m4a',
         'wwwroot/videos/SW1.mp4',
@@ -41,7 +42,13 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (preloadedVideos.length === assetsToLoad.length - 1) {
+        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
+            // Play the "loadingMusic" audio when it's loaded
+            loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
+            loadingMusicInstance.play();
+        }
+
+        if (preloadedVideos.length === assetsToLoad.length - 2) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';
             startGame();
@@ -66,26 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Add an event listener for user clicks to switch videos
-    document.addEventListener('click', function () {
-        // Set the audio start time to match the current time in the current video
-        audioStartTime = preloadedVideos[currentVideoIndex].currentTime;
-
-        // Switch to the next video
-        currentVideoIndex = (currentVideoIndex + 1) % preloadedVideos.length;
-        playVideoByIndex(currentVideoIndex);
-
-        // Start audio playback if not already playing
-        if (!audioPlaying) {
-            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
-            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
-            audioPlaying = true;
-
-            // Hide the loading screen when audio starts playing
-            loadingScreen.style.display = 'none';
-        }
-    });
-
     // Function to start the game
     function startGame() {
         // Start with the first video in the array
@@ -93,5 +80,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Change loading text to "Click" when the game starts
         loadingText.textContent = 'Click';
+
+        // Add an event listener for user clicks to switch videos
+        document.addEventListener('click', function () {
+            // Set the audio start time to match the current time in the current video
+            audioStartTime = preloadedVideos[currentVideoIndex].currentTime;
+
+            // Switch to the next video
+            currentVideoIndex = (currentVideoIndex + 1) % preloadedVideos.length;
+            playVideoByIndex(currentVideoIndex);
+
+            // Stop the "loadingMusic" audio when the first click occurs
+            if (!audioPlaying) {
+                loadingMusicInstance.stop();
+                audioPlaying = true;
+            }
+        });
     }
 });

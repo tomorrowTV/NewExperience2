@@ -42,12 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
-            // Play the "loadingMusic" audio when it's loaded
-            loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
-            loadingMusicInstance.play();
-        }
-
         if (preloadedVideos.length === assetsToLoad.length - 1) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';
@@ -84,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Start audio playback if not already playing
         if (!audioPlaying) {
-            createjs.Sound.registerSound({ src: 'wwwroot/assets/LoadingMusic.m4a', id: 'backgroundAudio' });
+            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
             const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
             audioPlaying = true;
 

@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Start audio playback if not already playing
         if (!audioPlaying) {
-            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
+            createjs.Sound.registerSound({ src: 'wwwroot/assets/LoadingSong.m4a', id: 'backgroundAudio' });
             const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
             audioPlaying = true;
 

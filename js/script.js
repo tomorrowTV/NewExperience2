@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentVideoIndex = 0;
     let audioPlaying = false;
     let audioStartTime = 0;
-    let firstUserClick = false; // Flag to track the first user click
     const preloadedVideos = [];
 
     // Define assets to preload
@@ -66,30 +65,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Event listener for user clicks to switch videos
+    // Add an event listener for user clicks to switch videos
     document.addEventListener('click', function () {
-        // If it's the first user click, start the game
-        if (!firstUserClick) {
-            firstUserClick = true;
-            startGame();
-        } else {
-            // For subsequent clicks, switch videos
-            // Set the audio start time to match the current time in the current video
-            audioStartTime = preloadedVideos[currentVideoIndex].currentTime;
+        // Set the audio start time to match the current time in the current video
+        audioStartTime = preloadedVideos[currentVideoIndex].currentTime;
 
-            // Switch to the next video
-            currentVideoIndex = (currentVideoIndex + 1) % preloadedVideos.length;
-            playVideoByIndex(currentVideoIndex);
+        // Switch to the next video
+        currentVideoIndex = (currentVideoIndex + 1) % preloadedVideos.length;
+        playVideoByIndex(currentVideoIndex);
 
-            // Start audio playback if not already playing
-            if (!audioPlaying) {
-                createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
-                const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
-                audioPlaying = true;
+        // Start audio playback if not already playing
+        if (!audioPlaying) {
+            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
+            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
+            audioPlaying = true;
 
-                // Hide the loading screen when audio starts playing
-                loadingScreen.style.display = 'none';
-            }
+            // Hide the loading screen when audio starts playing
+            loadingScreen.style.display = 'none';
         }
     });
 

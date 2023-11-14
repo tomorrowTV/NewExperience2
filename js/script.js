@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
-    const loadingScreen = document.getElementById('loadingScreen');
-    const loadingText = document.getElementById('loadingText');
-    const loadingGif = document.getElementById('loadingGif');
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingScreen = document.getElementById('loadingBarContainer');
+    const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
 
     let currentVideoIndex = 0;
     let audioPlaying = false;
@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (preloadedVideos.length === assetsToLoad.length - 1) {
-            // All assets are preloaded, hide loading screen and start the game
-            loadingScreen.style.display = 'none';
+            // All videos are preloaded, hide loading bar and start the game
+            loadingBar.style.display = 'none';
             startGame();
         }
     });
@@ -92,7 +92,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Change loading text to "Click" when the game starts
         loadingText.textContent = 'Click';
-
-        console.log('Game started, loading text changed to "Click"');
     }
 });

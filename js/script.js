@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
     const loadingScreen = document.getElementById('loadingBarContainer');
-    const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
+    const loadingText = document.getElementById('loadingText');
 
     let currentVideoIndex = 0;
     let audioPlaying = false;
@@ -42,6 +42,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
                     loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
                     audioPlaying = true;
+                }
+            });
+        }
+
+        if (asset.endsWith('.m4a') && asset.includes('Song')) {
+            // Background audio is loaded, start playing it
+            createjs.MD2Laser.preload.on("complete", function () {
+                // Check if the background audio is not already playing
+                if (!audioPlaying) {
+                    createjs.Sound.registerSound({ src: asset, id: 'backgroundAudio' });
+                    const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
+                    audioPlaying = true;
+
+                    // Hide the loading screen when audio starts playing
+                    loadingScreen.style.display = 'none';
                 }
             });
         }
@@ -96,12 +111,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Start audio playback if not already playing
         if (!audioPlaying) {
-            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
-            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
-            audioPlaying = true;
-
-            // Hide the loading screen when audio starts playing
-            loadingScreen.style.display = 'none';
+            createjs.MD2Laser.preload.on("complete", function () {
+                createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
+                const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
+                audioPlaying = true;
+            });
         }
     });
 

@@ -28,11 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Preload assets with progress tracking
     preload.loadManifest(assetsToLoad);
 
-    // Add an event listener for progress updates during loading
-    preload.on('progress', function (event) {
-        loadingBar.style.width = (event.progress * 55) + '%';
-    });
-
     // Add an event listener for when each asset is loaded
     preload.on('fileload', function (event) {
         const asset = event.item.src;

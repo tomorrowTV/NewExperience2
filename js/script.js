@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add more assets as needed
     ];
 
+    // Play the audio when the page loads
+    loadingMusic.play();
+
     const preload = new createjs.LoadQueue();
     preload.setMaxConnections(5);
 

@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
                     loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
                     audioPlaying = true;
+
+                    // Console message indicating LoadingMusic.m4a is loaded
+                    console.log("LoadingMusic.m4a is loaded.");
                 }
             });
         }

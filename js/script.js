@@ -11,15 +11,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Define assets to preload
     const assetsToLoad = [
-        'wwwroot/assets/LoadingMusic.m4a',
         'wwwroot/assets/CowboyHead.gif',
-        'wwwroot/assets/Song.m4a',
         'wwwroot/videos/SW1.mp4',
         'wwwroot/videos/SW2.mp4',
         'wwwroot/videos/SW3.mp4',
         'wwwroot/videos/SW4.mp4',
         'wwwroot/videos/SW5.mp4',
         'wwwroot/videos/SW6.mp4',
+        'wwwroot/assets/Song.m4a',  // Move Song.m4a to the end of the list
+        'wwwroot/assets/LoadingMusic.m4a',
         // Add more assets as needed
     ];
 
@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
             // Loading music is loaded, start playing it
-            createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
-            const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
-            loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
+            const loadingMusicAudio = new Audio(asset);
+            loadingMusicAudio.volume = 1;
+            loadingMusicAudio.play();
             audioPlaying = true;
 
             // Console message indicating LoadingMusic.m4a is loaded
@@ -46,8 +46,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (asset.endsWith('.m4a') && asset.includes('Song')) {
             // Background audio is loaded, start playing it
-            createjs.Sound.registerSound({ src: asset, id: 'backgroundAudio' });
-            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
+            const backgroundAudio = new Audio(asset);
+            backgroundAudio.loop = true;
+            backgroundAudio.play();
             audioPlaying = true;
 
             // Hide the loading screen when audio starts playing

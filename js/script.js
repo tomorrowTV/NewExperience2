@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (preloadedVideos.length === assetsToLoad.length - 1) {
             // All assets are preloaded, hide loading screen and start the game
             loadingScreen.style.display = 'none';
+            loadingText.style.display = 'none';
             startGame();
         }
     });

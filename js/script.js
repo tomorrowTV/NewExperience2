@@ -41,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
+        if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
+            // Loading music is loaded, start playing it
+            createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
+            const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
+            loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
+        }
+
         if (preloadedVideos.length === assetsToLoad.length - 1) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';

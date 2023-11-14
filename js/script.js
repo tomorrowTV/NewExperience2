@@ -56,7 +56,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (preloadedVideos.length === assetsToLoad.length - 1) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';
-            startGame();
+
+            // Ensure that loading music is loaded before trying to start the game
+            if (createjs.MD2Laser.preload.getItem("loadingMusic").loaded) {
+                startGame();
+            } else {
+                console.error("Loading music not loaded.");
+            }
         }
     });
 

@@ -2,11 +2,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
     const loadingScreen = document.getElementById('loadingBarContainer');
-    const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
+    const loadingText = document.getElementById('loadingText');
 
     let currentVideoIndex = 0;
     let audioPlaying = false;
     let audioStartTime = 0;
+    let loadingMusicInstance; // Declare a variable to hold the loadingMusic audio instance
+
     const preloadedVideos = [];
 
     // Define assets to preload
@@ -66,6 +68,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Function to start the game
+    function startGame() {
+        // Start with the first video in the array
+        playVideoByIndex(0);
+
+        // Play the "loadingMusic" audio
+        loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
+        loadingMusicInstance.play();
+
+        // Change loading text to "Click" when the game starts
+        loadingText.textContent = 'Click';
+    }
+
     // Add an event listener for user clicks to switch videos
     document.addEventListener('click', function () {
         // Set the audio start time to match the current time in the current video
@@ -74,24 +89,5 @@ document.addEventListener('DOMContentLoaded', function () {
         // Switch to the next video
         currentVideoIndex = (currentVideoIndex + 1) % preloadedVideos.length;
         playVideoByIndex(currentVideoIndex);
-
-        // Start audio playback if not already playing
-        if (!audioPlaying) {
-            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
-            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
-            audioPlaying = true;
-
-            // Hide the loading screen when audio starts playing
-            loadingScreen.style.display = 'none';
-        }
     });
-
-    // Function to start the game
-    function startGame() {
-        // Start with the first video in the array
-        playVideoByIndex(0);
-
-        // Change loading text to "Click" when the game starts
-        loadingText.textContent = 'Click';
-    }
 });

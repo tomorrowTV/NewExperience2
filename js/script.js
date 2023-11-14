@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let audioPlaying = false;
     let audioStartTime = 0;
     let loadingMusicAudio;
+    let fadeOutInterval;
 
     // Define assets to preload
     const assetsToLoad = [
@@ -51,11 +52,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (asset.endsWith('.gif')) {
             // This assumes that the loadingBar is the last asset to be loaded
-            loadingBar.style.display = 'none';
-            loadingMusicAudio.stop(); // Stop loading music when the loading bar disappears
-            startGame();
+            fadeOutInterval = setInterval(fadeOutLoadingScreen, 1000);
         }
     });
+
+    function fadeOutLoadingScreen() {
+        let opacity = parseFloat(loadingScreen.style.opacity) || 1;
+        opacity -= 0.1;
+
+        if (opacity <= 0) {
+            clearInterval(fadeOutInterval);
+            loadingScreen.style.display = 'none';
+            loadingMusicAudio.stop(); // Stop loading music when the loading screen disappears
+            startGame();
+        } else {
+            loadingScreen.style.opacity = opacity;
+        }
+    }
 
     // Function to play video by index
     function playVideoByIndex(index) {
@@ -89,9 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
             createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
             const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
             audioPlaying = true;
-
-            // Hide the loading screen when audio starts playing
-            loadingScreen.style.display = 'none';
         }
     });
 

@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loadingMusicInstance.play();
         }
 
-        if (preloadedVideos.length === assetsToLoad.length - 2) {
+        if (preloadedVideos.length === assetsToLoad.length - 3) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';
             startGame();

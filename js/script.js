@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentVideoIndex = 0;
     let audioPlaying = false;
     let audioStartTime = 0;
-    const preloadedVideos = [];
+    let loadingMusicAudio;
 
     // Define assets to preload
     const assetsToLoad = [
@@ -36,13 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
             // Loading music is loaded, start playing it
             createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
-
-            // Check if the loading music audio is not already playing
-            if (!audioPlaying) {
-                const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
-                loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
-                audioPlaying = true;
-            }
+            loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
+            loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
+            audioPlaying = true;
         }
 
         if (asset.endsWith('.mp4')) {
@@ -53,16 +49,11 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (preloadedVideos.length === assetsToLoad.length - 1) {
-            // All videos are preloaded, hide loading bar and start the game
+        if (asset.endsWith('.gif')) {
+            // This assumes that the loadingBar is the last asset to be loaded
             loadingBar.style.display = 'none';
-
-            // Ensure that loading music is loaded before trying to start the game
-            if (createjs.MD2Laser.preload.getItem("loadingMusic").loaded) {
-                startGame();
-            } else {
-                console.error("Loading music not loaded.");
-            }
+            loadingMusicAudio.stop(); // Stop loading music when the loading bar disappears
+            startGame();
         }
     });
 

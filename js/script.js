@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Define assets to preload
     const assetsToLoad = [
-        'wwwroot/assets/LoadingMusic.m4a',
+        { id: "loadingMusic", src: "wwwroot/assets/LoadingMusic.m4a" },
         'wwwroot/assets/CowboyHead.gif',
         'wwwroot/assets/Song.m4a',
         'wwwroot/videos/SW1.mp4',
@@ -43,7 +43,13 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (preloadedVideos.length === assetsToLoad.length - 1) {
+        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
+            // Play the "loadingMusic" audio when it's loaded
+            loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
+            loadingMusicInstance.play();
+        }
+
+        if (preloadedVideos.length === assetsToLoad.length - 2) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';
             startGame();
@@ -73,10 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Start with the first video in the array
         playVideoByIndex(0);
 
-        // Play the "loadingMusic" audio
-        loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
-        loadingMusicInstance.play();
-
         // Change loading text to "Click" when the game starts
         loadingText.textContent = 'Click';
     }
@@ -89,5 +91,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Switch to the next video
         currentVideoIndex = (currentVideoIndex + 1) % preloadedVideos.length;
         playVideoByIndex(currentVideoIndex);
+
+        // Stop the "loadingMusic" audio when the first click occurs
+        if (!audioPlaying) {
+            loadingMusicInstance.stop();
+            audioPlaying = true;
+        }
     });
 });

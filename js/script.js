@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
     const loadingScreen = document.getElementById('loadingBarContainer');
-    const loadingText = document.getElementById('loadingText');
+    const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
 
     let currentVideoIndex = 0;
     let audioPlaying = false;
@@ -11,15 +11,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Define assets to preload
     const assetsToLoad = [
+        'wwwroot/assets/LoadingMusic.m4a',
         'wwwroot/assets/CowboyHead.gif',
+        'wwwroot/assets/Song.m4a',
         'wwwroot/videos/SW1.mp4',
         'wwwroot/videos/SW2.mp4',
         'wwwroot/videos/SW3.mp4',
         'wwwroot/videos/SW4.mp4',
         'wwwroot/videos/SW5.mp4',
         'wwwroot/videos/SW6.mp4',
-        'wwwroot/assets/Song.m4a',  // Move Song.m4a to the end of the list
-        'wwwroot/assets/LoadingMusic.m4a',
         // Add more assets as needed
     ];
 
@@ -33,28 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
     preload.on('fileload', function (event) {
         const asset = event.item.src;
 
-        if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
-            // Loading music is loaded, start playing it
-            const loadingMusicAudio = new Audio(asset);
-            loadingMusicAudio.volume = 1;
-            loadingMusicAudio.play();
-            audioPlaying = true;
-
-            // Console message indicating LoadingMusic.m4a is loaded
-            console.log("LoadingMusic.m4a is loaded.");
-        }
-
-        if (asset.endsWith('.m4a') && asset.includes('Song')) {
-            // Background audio is loaded, start playing it
-            const backgroundAudio = new Audio(asset);
-            backgroundAudio.loop = true;
-            backgroundAudio.play();
-            audioPlaying = true;
-
-            // Hide the loading screen when audio starts playing
-            loadingScreen.style.display = 'none';
-        }
-
         if (asset.endsWith('.mp4')) {
             const videoElement = document.createElement('video');
             videoElement.src = asset;
@@ -66,13 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (preloadedVideos.length === assetsToLoad.length - 1) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';
-
-            // Ensure that loading music is loaded before trying to start the game
-            if (!audioPlaying) {
-                console.error("Loading music not loaded.");
-            } else {
-                startGame();
-            }
+            startGame();
         }
     });
 
@@ -105,7 +77,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Start audio playback if not already playing
         if (!audioPlaying) {
-            console.error("Background audio not loaded.");
+            createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
+            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
+            audioPlaying = true;
+
+            // Hide the loading screen when audio starts playing
+            loadingScreen.style.display = 'none';
         }
     });
 

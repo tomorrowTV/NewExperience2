@@ -24,9 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Add more assets as needed
     ];
 
-    // Play the audio when the page loads
-    loadingMusic.play();
-
     const preload = new createjs.LoadQueue();
     preload.setMaxConnections(5);
 
@@ -36,6 +33,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add an event listener for when each asset is loaded
     preload.on('fileload', function (event) {
         const asset = event.item.src;
+
+        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
+            // Play the audio when it's loaded
+            loadingMusic.play();
+        }
 
         if (asset.endsWith('.mp4')) {
             const videoElement = document.createElement('video');

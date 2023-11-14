@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentVideoIndex = 0;
     let audioPlaying = false;
     let audioStartTime = 0;
-    let loadingMusicAudio;
-    let fadeOutInterval;
+    const preloadedVideos = [];
 
     // Define assets to preload
     const assetsToLoad = [
@@ -37,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
             // Loading music is loaded, start playing it
             createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
-            loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
+            const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
             loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
             audioPlaying = true;
         }
@@ -52,23 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (asset.endsWith('.gif')) {
             // This assumes that the loadingBar is the last asset to be loaded
-            fadeOutInterval = setInterval(fadeOutLoadingScreen, 1000);
+            startGame(); // Start the game once the loadingBar is loaded
         }
     });
-
-    function fadeOutLoadingScreen() {
-        let opacity = parseFloat(loadingScreen.style.opacity) || 1;
-        opacity -= 0.1;
-
-        if (opacity <= 0) {
-            clearInterval(fadeOutInterval);
-            loadingScreen.style.display = 'none';
-            loadingMusicAudio.stop(); // Stop loading music when the loading screen disappears
-            startGame();
-        } else {
-            loadingScreen.style.opacity = opacity;
-        }
-    }
 
     // Function to play video by index
     function playVideoByIndex(index) {
@@ -107,9 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to start the game
     function startGame() {
-        // Start with the first video in the array
-        playVideoByIndex(0);
-
         // Change loading text to "Click" when the game starts
         loadingText.textContent = 'Click';
     }

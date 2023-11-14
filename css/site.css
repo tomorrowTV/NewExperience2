@@ -51,15 +51,15 @@ html {
     width: 1000px; /* Set the width according to your preference */
     height: auto; /* Maintain aspect ratio */
     max-width: 100%; /* Ensure the image doesn't exceed its container */
-    
+
     /* Positioning options */
     position: absolute; /* Use 'relative' or 'absolute' based on your layout */
     top: 20px; /* Adjust the distance from the top */
     left: 20%; /* Move it to the center horizontally */
     transform: translateX(-50%); /* Center it horizontally using transform */
-    
+
     /* Uncomment the following line to center it vertically */
-    top: 50%; transform: translateY(-50%); */
+    top: 50%; transform: translateY(-50%);
     
     /* Uncomment the following line for positioning from the right */
     /* right: 20px; */

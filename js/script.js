@@ -34,11 +34,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const asset = event.item.src;
 
         if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
-            // Loading music is loaded, start playing it
-            createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
-            const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
-            loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
-            audioPlaying = true;
+            // Loading music is loaded, start playing it once all assets are loaded
+            createjs.MD2Laser.preload.on("complete", function () {
+                // Check if the loading music audio is not already playing
+                if (!audioPlaying) {
+                    createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
+                    const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
+                    loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
+                    audioPlaying = true;
+                }
+            });
         }
 
         if (asset.endsWith('.mp4')) {
@@ -49,9 +54,16 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (asset.endsWith('.gif')) {
-            // This assumes that the loadingBar is the last asset to be loaded
-            startGame(); // Start the game once the loadingBar is loaded
+        if (preloadedVideos.length === assetsToLoad.length - 1) {
+            // All videos are preloaded, hide loading bar and start the game
+            loadingBar.style.display = 'none';
+
+            // Ensure that loading music is loaded before trying to start the game
+            if (createjs.MD2Laser.preload.getItem("loadingMusic").loaded) {
+                startGame();
+            } else {
+                console.error("Loading music not loaded.");
+            }
         }
     });
 
@@ -87,11 +99,17 @@ document.addEventListener('DOMContentLoaded', function () {
             createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
             const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
             audioPlaying = true;
+
+            // Hide the loading screen when audio starts playing
+            loadingScreen.style.display = 'none';
         }
     });
 
     // Function to start the game
     function startGame() {
+        // Start with the first video in the array
+        playVideoByIndex(0);
+
         // Change loading text to "Click" when the game starts
         loadingText.textContent = 'Click';
     }

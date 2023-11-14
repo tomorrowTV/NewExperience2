@@ -34,34 +34,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const asset = event.item.src;
 
         if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
-            // Loading music is loaded, start playing it once all assets are loaded
-            createjs.MD2Laser.preload.on("complete", function () {
-                // Check if the loading music audio is not already playing
-                if (!audioPlaying) {
-                    createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
-                    const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
-                    loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
-                    audioPlaying = true;
+            // Loading music is loaded, start playing it
+            createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
+            const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
+            loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
+            audioPlaying = true;
 
-                    // Console message indicating LoadingMusic.m4a is loaded
-                    console.log("LoadingMusic.m4a is loaded.");
-                }
-            });
+            // Console message indicating LoadingMusic.m4a is loaded
+            console.log("LoadingMusic.m4a is loaded.");
         }
 
         if (asset.endsWith('.m4a') && asset.includes('Song')) {
             // Background audio is loaded, start playing it
-            createjs.MD2Laser.preload.on("complete", function () {
-                // Check if the background audio is not already playing
-                if (!audioPlaying) {
-                    createjs.Sound.registerSound({ src: asset, id: 'backgroundAudio' });
-                    const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
-                    audioPlaying = true;
+            createjs.Sound.registerSound({ src: asset, id: 'backgroundAudio' });
+            const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
+            audioPlaying = true;
 
-                    // Hide the loading screen when audio starts playing
-                    loadingScreen.style.display = 'none';
-                }
-            });
+            // Hide the loading screen when audio starts playing
+            loadingScreen.style.display = 'none';
         }
 
         if (asset.endsWith('.mp4')) {
@@ -77,10 +67,10 @@ document.addEventListener('DOMContentLoaded', function () {
             loadingBar.style.display = 'none';
 
             // Ensure that loading music is loaded before trying to start the game
-            if (createjs.MD2Laser.preload.getItem("loadingMusic").loaded) {
-                startGame();
-            } else {
+            if (!audioPlaying) {
                 console.error("Loading music not loaded.");
+            } else {
+                startGame();
             }
         }
     });
@@ -114,11 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Start audio playback if not already playing
         if (!audioPlaying) {
-            createjs.MD2Laser.preload.on("complete", function () {
-                createjs.Sound.registerSound({ src: 'wwwroot/assets/Song.m4a', id: 'backgroundAudio' });
-                const backgroundAudio = createjs.Sound.play('backgroundAudio', { loop: -1 });
-                audioPlaying = true;
-            });
+            console.error("Background audio not loaded.");
         }
     });
 

@@ -41,10 +41,10 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
-            // Play the "loadingMusic" audio when it's loaded
-            loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
-            loadingMusicInstance.play();
+        if (asset.toLowerCase() === 'wwwroot/assets/loadingmusic.m4a') {
+           // Play the "loadingMusic" audio when it's loaded
+           loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
+           loadingMusicInstance.play();
         }
 
         if (preloadedVideos.length === assetsToLoad.length - 1) {

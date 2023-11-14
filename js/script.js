@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
+    const loadingScreen = document.getElementById('loadingBarContainer');
     const loadingText = document.getElementById('loadingText');
 
     let currentVideoIndex = 0;

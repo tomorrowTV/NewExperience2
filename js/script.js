@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
-    const loadingMusic = document.getElementById('loadingMusic');
     const loadingScreen = document.getElementById('loadingBarContainer');
     const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
 
@@ -33,17 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add an event listener for when each asset is loaded
     preload.on('fileload', function (event) {
         const asset = event.item.src;
-
-        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
-            // Play the audio when it's loaded (muted)
-            loadingMusic.volume = 0; // Mute
-            loadingMusic.play().then(() => {
-                // Unmute after user interaction
-                loadingMusic.volume = 1; // Full volume
-            }).catch(error => {
-                console.error('Audio playback error:', error.message);
-            });
-        }
 
         if (asset.endsWith('.mp4')) {
             const videoElement = document.createElement('video');

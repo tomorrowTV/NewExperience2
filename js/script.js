@@ -35,8 +35,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const asset = event.item.src;
 
         if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
-            // Play the audio when it's loaded
-            loadingMusic.play();
+            // Play the audio when it's loaded (muted)
+            loadingMusic.volume = 0; // Mute
+            loadingMusic.play().then(() => {
+                // Unmute after user interaction
+                loadingMusic.volume = 1; // Full volume
+            }).catch(error => {
+                console.error('Audio playback error:', error.message);
+            });
         }
 
         if (asset.endsWith('.mp4')) {

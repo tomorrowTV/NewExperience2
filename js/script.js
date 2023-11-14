@@ -33,19 +33,24 @@ document.addEventListener('DOMContentLoaded', function () {
     preload.on('fileload', function (event) {
         const asset = event.item.src;
 
+        if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
+            // Loading music is loaded, start playing it
+            createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
+
+            // Check if the loading music audio is not already playing
+            if (!audioPlaying) {
+                const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
+                loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
+                audioPlaying = true;
+            }
+        }
+
         if (asset.endsWith('.mp4')) {
             const videoElement = document.createElement('video');
             videoElement.src = asset;
             videoElement.preload = 'auto';
             videoElement.setAttribute('playsinline', '');
             preloadedVideos.push(videoElement);
-        }
-
-        if (asset.endsWith('.m4a') && asset.includes('LoadingMusic')) {
-            // Loading music is loaded, start playing it
-            createjs.Sound.registerSound({ src: asset, id: 'loadingMusicAudio' });
-            const loadingMusicAudio = createjs.Sound.play('loadingMusicAudio');
-            loadingMusicAudio.volume = 0.5; // Adjust the volume as needed
         }
 
         if (preloadedVideos.length === assetsToLoad.length - 1) {

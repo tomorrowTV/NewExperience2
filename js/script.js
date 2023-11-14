@@ -41,6 +41,12 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
+        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
+            // Play the "loadingMusic" audio when it's loaded
+            loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
+            loadingMusicInstance.play();
+        }
+
         if (preloadedVideos.length === assetsToLoad.length - 1) {
             // All videos are preloaded, hide loading bar and start the game
             loadingBar.style.display = 'none';

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.getElementById('videoPlayerContainer');
     const loadingBar = document.getElementById('loadingBar');
+    const loadingMusic = document.getElementById('loadingMusic');
     const loadingScreen = document.getElementById('loadingBarContainer');
     const loadingText = document.getElementById('loadingText'); // Add this line to get the loading text element
 
@@ -41,10 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
             preloadedVideos.push(videoElement);
         }
 
-        if (asset.toLowerCase() === 'wwwroot/assets/loadingmusic.m4a') {
-           // Play the "loadingMusic" audio when it's loaded
-           loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
-           loadingMusicInstance.play();
+        if (asset === 'wwwroot/assets/LoadingMusic.m4a') {
+            // Play the "loadingMusic" audio when it's loaded
+            loadingMusicInstance = createjs.Sound.createInstance("loadingMusic");
+            loadingMusicInstance.play();
         }
 
         if (preloadedVideos.length === assetsToLoad.length - 1) {

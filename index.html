@@ -18,7 +18,6 @@
         <div id="loadingText">Loading...</div>
         <img id="loadingBar" src="wwwroot/assets/CowboyHead.gif" alt="Loading Bar">
     </div>
-    </div>
 
     <div id="videoPlayerContainer"></div>
 
@@ -29,6 +28,13 @@
 
     <!-- Include your script.js file for game logic -->
     <script src="js/script.js"></script>
+
+    <script>
+        const loadingMusic = document.getElementById('loadingMusic');
+
+        // Play the audio when the page loads
+        loadingMusic.play();
+    </script>
 
     <script>
         // Initialize PreloadJS
